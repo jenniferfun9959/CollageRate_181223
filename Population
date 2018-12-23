@@ -1,0 +1,37 @@
+import pandas as pd
+import numpy as np
+
+
+sheet=["新北市","臺北市","桃園市","臺中市","臺南市","高雄市","宜蘭縣","新竹縣","苗栗縣","彰化縣","南投縣","雲林縣","嘉義縣",
+       "屏東縣","臺東縣","花蓮縣","澎湖縣","基隆市","新竹市","嘉義市","金門縣","連江縣"] #0-21
+Myheader=["Town","Household","Population","Male","Female"]
+
+
+Alltable=[]
+
+for x in np.arange(22):
+    table=pd.read_excel("./POP/10601.xls",sheet_name=sheet[x],skiprows=3,names=Myheader)
+    n=len(table)
+    
+    for y in np.arange(n):
+        table.loc[y,"Town"]=sheet[x]+table.loc[y,"Town"]
+        
+    Alltable.append(table)
+    
+
+table2=pd.concat(Alltable)
+table2=table2.reset_index()
+table3=table2.drop(["index","Household","Male","Female"],axis=1)
+
+
+
+for x in np.arange(368):
+    tempname=table3.loc[x,"Town"]
+    if tempname[4]=='\u3000':
+        newname=tempname[0:4]+tempname[5:]
+        table3.loc[x,"Town"]=newname
+        
+        
+
+#輸出資料
+table3.to_csv("./POP/population106.csv")
